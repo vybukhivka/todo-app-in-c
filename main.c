@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 void showTasks(void) {
-	printf("this is a todo app\n");
+
 }
 
 void compliteTask(void) {
@@ -15,10 +16,37 @@ void editTask(void) {
 	printf("list of tasks\n");
 }
 
+int createDatabase(void) {
+	FILE *fprt;
+	if ((fprt = fopen("data.txt", "r"))) {
+		fclose(fprt);
+		printf("Data file exists.\n");
+		return 1;
+	}
+	printf("Data file created.\n");
+	return 0;
+}
+
+void createDataFile(void) {
+	FILE *fprt;
+	fprt = fopen("data.txt", "w");
+	fclose(fprt);
+}
+
+void appendToFile(char *task) {
+	FILE *fprt;
+	fprt = fopen("data.txt", "a");
+	fprintf(fprt, "\n");
+	fprintf(fprt, task);
+	fclose(fprt);
+}
+
 int main(void) {
 	char input[30];
 	char allowedInputs[4][10] = {"list", "add", "complite", "edit"};
 	int isInputAllowed = 0;
+
+	createDatabase();
 
 	do {
 		printf("input: ");
