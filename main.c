@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-//check
-
 void showTasks(void) {
 
 }
@@ -18,21 +16,17 @@ void editTask(void) {
 	printf("list of tasks\n");
 }
 
-int createDatabase(void) {
-	FILE *fprt;
-	if ((fprt = fopen("data.txt", "r"))) {
-		fclose(fprt);
-		printf("Data file exists.\n");
-		return 1;
-	}
-	printf("Data file created.\n");
-	return 0;
-}
-
-void createDataFile(void) {
-	FILE *fprt;
-	fprt = fopen("data.txt", "w");
+int createDataFile(void) {
+    FILE *fprt;
+    if ((fprt = fopen("data.txt", "r"))) {
 	fclose(fprt);
+	printf("Data file exists.\n");
+	return 1;
+    }
+    fprt = fopen("data.txt", "w");
+    fclose(fprt);
+    printf("Data file created.\n");
+    return 0;
 }
 
 void appendToFile(char *task) {
@@ -48,7 +42,7 @@ int main(void) {
 	char allowedInputs[4][10] = {"list", "add", "complite", "edit"};
 	int isInputAllowed = 0;
 
-	createDatabase();
+	createDataFile();
 
 	do {
 		printf("input: ");
