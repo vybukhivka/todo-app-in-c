@@ -5,23 +5,24 @@
 int showTasks(void) {
     FILE *fprt;
     int position; 
-    char data[100];
+	int i = 1;
+    char data[1024];
     fprt = fopen("data.txt", "r");
     fseek(fprt, 0, SEEK_END);
     position = ftell(fprt);
 
-    if (position != 0) {
-	fseek(fprt, 0, SEEK_SET);
-	while (fgets(data, sizeof(data), fprt)) {
-	    printf("content: %s", data);
+	if (position != 0) {
+		fseek(fprt, 0, SEEK_SET);
+		while (fgets(data, sizeof(data), fprt)) {
+			printf("task %i: %s", i++, data);
+		}
+		fclose(fprt);
+		return 0;
+	} else {
+		printf("There is no items in to-do list.\n");
+		fclose(fprt);
+		return 1;
 	}
-	fclose(fprt);
-	return 0;
-    } else {
-	printf("There is no items in to-do list.\n");
-	fclose(fprt);
-	return 1;
-    }
 }
 
 void compliteTask(void) {
@@ -47,11 +48,22 @@ int createDataFile(void) {
     return 0;
 }
 
-void appendToFile(char *task) {
+void addTask(void) {
 	FILE *fprt;
 	fprt = fopen("data.txt", "a");
-	fprintf(fprt, "\n");
-	fprintf(fprt, task);
+
+	// get user input
+	char task[128];
+	printf("Write your task: ");
+	fgets(task, sizeof(task), stdin);
+	size_t length = strlen(task);
+	task[length - 1] = '\0';
+	if (task[0] > 96) {
+		task[0] -= 32;
+	}
+
+	// append to the data file 
+	fprintf(fprt, "%s\n", task);
 	fclose(fprt);
 }
 
@@ -81,7 +93,12 @@ int main(void) {
 		}
 	} while (isInputAllowed == 0);
 
-	if (strcmp(input, "list\n")) {
+	if (strcmp(input, "list") == 0) {
+		showTasks();
+	}
+
+	if (strcmp(input, "add") == 0) {
+		addTask();
 		showTasks();
 	}
 
