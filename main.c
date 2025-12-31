@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define MAX_LINE_LENGTH 256
+
 int showTasks(void) {
     FILE *fprt;
     int position; 
@@ -14,7 +16,7 @@ int showTasks(void) {
 	if (position != 0) {
 		fseek(fprt, 0, SEEK_SET);
 		while (fgets(data, sizeof(data), fprt)) {
-			printf("task %i: %s", i++, data);
+			printf("[%i]: %s", i++, data);
 		}
 		fclose(fprt);
 		return 0;
@@ -25,27 +27,116 @@ int showTasks(void) {
 	}
 }
 
-void compliteTask(void) {
-	printf("compliteTask\n");
-	printf("list of tasks\n");
+int compliteTask(void) {
+	FILE *fptr, *fptr_tmp;
+    fptr = fopen("data.txt", "r");
+	char buffer[MAX_LINE_LENGTH];
+	int taskNumber;
+	int current_line = 1;
+
+	showTasks();
+	printf("Select task number to edit: ");
+	scanf("%d", &taskNumber);
+	printf("Task %d is completed\n", taskNumber);
+
+	fptr_tmp = fopen("data-tmp.txt", "w");
+	if (fptr_tmp == NULL) {
+		printf("Error: Can't open a temp file: data-tmp.txt\n");
+		fclose(fptr_tmp);
+		return 1;
+	}
+
+	while (fgets(buffer, MAX_LINE_LENGTH, fptr) != NULL) {
+		if (current_line != taskNumber) {
+			fputs(buffer, fptr_tmp);
+		}
+		current_line++;
+	}
+
+	fclose(fptr);
+	fclose(fptr_tmp);
+
+	if (remove("data.txt") != 0) {
+		printf("Error: Can't delete the original file.\n");
+		return 1;
+	}
+
+	if (rename("data-tmp.txt", "data.txt") != 0) {
+		printf("Error: Can't rename the temp file.\n");
+		return 1;
+	}
+
+	return 0;
 }
 
-void editTask(void) {
-	printf("editTask\n");
-	printf("list of tasks\n");
+int editTask(void) {
+	FILE *fptr, *fptr_tmp;
+    fptr = fopen("data.txt", "r");
+	char buffer[MAX_LINE_LENGTH];
+	int taskNumber;
+	int current_line = 1;
+	char editedTask[MAX_LINE_LENGTH];
+
+	showTasks();
+	printf("Select task number to edit: ");
+	scanf("%d", &taskNumber);
+	printf("You have selected task #%d\n", taskNumber);
+
+	// cleaning the buffer
+	int c;
+	while((c = getchar()) != '\n' && c != EOF);
+
+	// get user input
+	printf("Write your task: ");
+	fgets(editedTask, sizeof(editedTask), stdin);
+	size_t length = strlen(editedTask);
+	if (editedTask[0] > 96) {
+		editedTask[0] -= 32;
+	}
+
+	fptr_tmp = fopen("data-tmp.txt", "w");
+	if (fptr_tmp == NULL) {
+		printf("Error: Can't open a temp file: data-tmp.txt\n");
+		fclose(fptr_tmp);
+		return 1;
+	}
+
+	while (fgets(buffer, MAX_LINE_LENGTH, fptr) != NULL) {
+		if (current_line != taskNumber) {
+			fputs(buffer, fptr_tmp);
+		} else {
+			printf("edited task: %s\n", editedTask);
+			fputs(editedTask, fptr_tmp);
+		}
+		current_line++;
+	}
+
+	fclose(fptr);
+	fclose(fptr_tmp);
+
+	if (remove("data.txt") != 0) {
+		printf("Error: Can't delete the original file.\n");
+		return 1;
+	}
+
+	if (rename("data-tmp.txt", "data.txt") != 0) {
+		printf("Error: Can't rename the temp file.\n");
+		return 1;
+	}
+
+	return 0;
 }
 
 int createDataFile(void) {
-    FILE *fprt;
-    if ((fprt = fopen("data.txt", "r"))) {
+	FILE *fprt;
+	if ((fprt = fopen("data.txt", "r"))) {
+		fclose(fprt);
+		return 1;
+	}
+	fprt = fopen("data.txt", "w");
 	fclose(fprt);
-	printf("Data file exists.\n");
-	return 1;
-    }
-    fprt = fopen("data.txt", "w");
-    fclose(fprt);
-    printf("Data file created.\n");
-    return 0;
+	printf("Data file created.\n");
+	return 0;
 }
 
 void addTask(void) {
@@ -69,7 +160,7 @@ void addTask(void) {
 
 int main(void) {
 	char input[30];
-	char allowedInputs[4][10] = {"list", "add", "complite", "edit"};
+	char allowedInputs[4][10] = {"list", "add", "done", "edit"};
 	int isInputAllowed = 0;
 
 	createDataFile();
@@ -100,6 +191,14 @@ int main(void) {
 	if (strcmp(input, "add") == 0) {
 		addTask();
 		showTasks();
+	}
+
+	if (strcmp(input, "edit") == 0) {
+		editTask();
+	}
+
+	if (strcmp(input, "done") == 0) {
+		compliteTask();
 	}
 
 	return 0;
