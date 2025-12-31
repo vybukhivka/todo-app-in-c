@@ -1,6 +1,5 @@
 Handle possible errors in to-do app
 Make the app to not close after each operation
-Commit to the github
 Refactor if statement to the switch case
 Create a macros
-Make this app to be form cli
+Make this app to be executable from cli
