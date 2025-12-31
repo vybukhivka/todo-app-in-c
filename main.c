@@ -4,6 +4,14 @@
 
 #define MAX_LINE_LENGTH 256
 
+void clearScreen(void) {
+	#ifdef _WIN32
+		system("cls");
+	#else
+		system("clear");
+	#endif 
+}
+
 char toUpper(char c) {
 	char output = c;
 	if (output >= 'a' && output <= 'z') {
@@ -51,7 +59,7 @@ int handleTask(char *action) {
 	int taskNumber, current_line = 1;
 
 	showTasks();
-	printf("Select task by number: ");
+	printf("\nSelect task by number: ");
 	scanf("%d", &taskNumber);
 	while(getchar() != '\n');
 
@@ -77,6 +85,7 @@ int handleTask(char *action) {
 	fclose(fptr_tmp);
 	remove("data.txt");
 	rename("data-tmp.txt", "data.txt");
+	clearScreen();
 	return 0;
 }
 
@@ -96,9 +105,11 @@ void addTask(void) {
 	FILE *fprt;
 	fprt = fopen("data.txt", "a");
 
+	showTasks();
+
 	// get user input
 	char task[MAX_LINE_LENGTH];
-	printf("Write your task: ");
+	printf("\nWrite your task: ");
 	fgets(task, sizeof(task), stdin);
 	size_t length = strlen(task);
 	task[length - 1] = '\0';
@@ -107,51 +118,62 @@ void addTask(void) {
 	// append to the data file 
 	fprintf(fprt, "%s\n", task);
 	fclose(fprt);
-
-	showTasks();
+	clearScreen();
 }
 
 int main(void) {
 	char input[30];
-	char allowedInputs[4][10] = {"list", "add", "done", "edit"};
-	int isInputAllowed = 0;
+	char allowedInputs[5][10] = {"list", "add", "done", "edit", "quit"};
+	int running = 1;
 
 	createDataFile();
 
-	do {
-		printf("input: ");
-		fgets(input, sizeof(input), stdin);
-		size_t length = strlen(input);
-		input[length - 1] = '\0';
+	while (running) {
+		clearScreen();
+		showTasks();
+		printf("\n");
+		printf("Commands: add, edit, done, or quit.\n");
+		printf("Input: ");
+		if (fgets(input, sizeof(input), stdin) == NULL) break;
+		input[strcspn(input, "\n")] = 0;
 
-		for (int i = 0; i < 4; i++) {
-			int comparisonResult = strcmp(input, allowedInputs[i]);
-			if (comparisonResult == 0) {
+		int isInputAllowed = 0;
+		for (int i = 0; i < 5; i++) {
+			if (strcmp(input, allowedInputs[i]) == 0) {
 				isInputAllowed = 1;
 				break;
 			}
 		}
 
+		clearScreen();
+
 		if (isInputAllowed == 0) {
-			printf("You input in not allowed\n");
+			printf("Invalid command. Use: add, edit, done, or quit.\n");
+			getchar();
 		}
-	} while (isInputAllowed == 0);
 
-	if (strcmp(input, "list") == 0) {
-		showTasks();
-	}
+		if (strcmp(input, "list") == 0) {
+			showTasks();
+			printf("\nPress Enter to continue...");
+			getchar();
+		}
 
-	if (strcmp(input, "add") == 0) {
-		addTask();
-	}
+		if (strcmp(input, "add") == 0) {
+			addTask();
+		}
 
-	if (strcmp(input, "edit") == 0) {
-		handleTask("edit");
-	}
+		if (strcmp(input, "edit") == 0) {
+			handleTask("edit");
+		}
 
-	if (strcmp(input, "done") == 0) {
-		handleTask("done");
-	}
+		if (strcmp(input, "done") == 0) {
+			handleTask("done");
+		}
+
+		if (strcmp(input, "quit") == 0) {
+			running = 0;
+		}
+	} 
 
 	return 0;
 }
