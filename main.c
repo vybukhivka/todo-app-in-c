@@ -92,6 +92,11 @@ int handleTaskDirect(char *action, int taskNumber, char *description) {
     getPath(path_main, ".todo_data.txt");
     getPath(path_tmp, ".todo_tmp.txt");
 
+	if (taskNumber < 0 || taskNumber > 20) {
+		printf("Wrong task number\n");
+		return 1;
+	} 
+
     FILE *fptr = fopen(path_main, "r");
     FILE *fptr_tmp = fopen(path_tmp, "w");
 
