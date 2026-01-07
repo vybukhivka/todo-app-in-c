@@ -1,7 +1,11 @@
 # C-Todo CLI
 
-A lightweight, terminal-centric To-Do manager written in C. Compiles on any Unix-like system (macOS, Linux, BSD) using standard libraries.
+A lightweight, terminal-centric To-Do manager written in C. Compiles on any Unix-like system using standard libraries.
 Tasks are stored in `~/.todo_data.txt`, making them accessible from any directory.
+
+
+https://github.com/user-attachments/assets/081ade27-28db-40e8-82b1-efa660e54e62
+
 
 
 ## Usage 
