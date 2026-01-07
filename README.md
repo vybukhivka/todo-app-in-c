@@ -3,7 +3,7 @@
 A lightweight, terminal-centric To-Do manager written in C. Compiles on any Unix-like system using standard libraries.
 Tasks are stored in `~/.todo_data.txt`, making them accessible from any directory.
 
-https://github.com/user-attachments/assets/4c07aa5b-5392-4d17-9f57-dbfddea74110
+![demo](https://github.com/user-attachments/assets/0b8b40f8-2628-4924-b3ae-bb69c67f7b13)
 
 ## Usage 
 
