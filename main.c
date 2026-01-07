@@ -31,9 +31,7 @@ int getTasksNumber(void) {
 		i++;
 	}
 
-	if (i == 0) {
-		printf("List is empty.\n");
-	} else if (i > 1) {
+	if (i > 0) {
 		return i;
 	}
 
@@ -72,7 +70,7 @@ int handleTask(char *action, int taskNumber, char *description) {
 	int totalTasksNumber = getTasksNumber();
 
 	if (taskNumber < 0 || taskNumber > totalTasksNumber ) {
-		printf("Wrong task number\n");
+		printf("Wrong task number.\n");
 		return 1;
 	} 
 
@@ -149,8 +147,8 @@ int main(int argc, char *argv[]) {
 
 	if (strcmp(argv[1], "add") == 0) {
 		if (argc < 3 || argc > 3) {
-			printf("Error: Provide a task description\n");
-			printf("Like: todo add \"your task\"\n");
+			printf("Error: Provide a task description.\n");
+			printf("Like: todo add \"your task\".\n");
 			return 1;
 		}	
 		addTask(argv[2]);
@@ -159,7 +157,7 @@ int main(int argc, char *argv[]) {
 
 	if (strcmp(argv[1], "done") == 0) {
 		if (argc < 3) {
-			printf("Error: Specify a task number\n");
+			printf("Error: Specify a task number.\n");
 			printf("Like: todo done 1\n");
 			return 1;
 		}
@@ -169,7 +167,7 @@ int main(int argc, char *argv[]) {
 
 	if (strcmp(argv[1], "edit") == 0) {
 		if (argc < 4) {
-			printf("Error: You need to provide 4 arguments\n");
+			printf("Error: You need to provide 4 arguments.\n");
 			printf("Like: todo edit 1 \"new deskricption""\n");
 			return 1;
 		}
